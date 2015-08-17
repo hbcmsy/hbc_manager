@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Insert title here</title>
+		<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.min.js"></script> 
+		<script type="text/javascript" src="js/calendar.js"></script>
+		<link type="text/css" rel="stylesheet" href="css/calendar.css" />
+		<script type="text/javascript">
+			/***************************************/
+			var order_ID = -1;
+			var order_date;
+			var order_create_date;
+			var client_name;
+			var client_No;
+			var client_class_No;
+			var order_creator;
+			var order_refer;
+			var order_ordered;
+			var order_etc;
+			/****************************************/
+			function toJSON(){
+				var j = {};
+				j["order_ID"] = order_ID;
+				j["order_date"] = order_date;
+				j["order_create_date"] = order_create_date;
+				j["client_name"] = client_name;
+				j["client_No"] = client_No;
+				j["client_class_No"] = client_class_No;
+				j["client_bus_No"] = client_bus_No;
+				j["order_creator"] = order_creator;
+				j["order_refer"] = order_refer;
+				j["order_ordered"] = order_ordered;
+				j["order_etc"] = order_etc;
+				return j;
+			}
+			function saveOrder(){
+				//TODO bug fix 如果连续添加,会因为第一次获得了order_ID,导致第二次添加的时候为修改
+				
+				//客户名称
+				client_name = $("#client_name").attr("value")
+				//活动日期时间</td>
+				order_date = getDate();
+				//团队数量</td>
+				client_No = $("#client_No").val();
+				//班级数</td>
+				client_class_No = $("#client_class_No").val();
+				//车辆数
+				client_bus_No = $("#client_bus_No").val();
+				//订单添加人</td>
+				order_creator = $("#order_creator").val();
+				//参加项目</td>
+				order_refer = $("#order_refer").val();
+            			//<option value="1">项目01</option>
+                		//<option value="2">项目02</option>
+           		//预约or签约</td>
+				order_ordered = $("#order_ordered").val();
+            			//<option value="0">预约</option>
+                		//<option value="1">签约</option>
+           		//备注</td>
+				order_etc = $("#order_etc").val();
+				
+				$.post("action/OrderAction!saveOrder",toJSON(),
+			 			function(json){
+			    			json = JSON.parse(json);
+			    			console.log(json);
+			    			if(json["order_ID"] != -1){
+			    				order_ID = json["order_ID"];
+			    				alert("保存成功");
+			    				showCalendar();
+			    			}
+			    			else
+			    				alert("保存失败!");
+			    		});
+					
+			}
+			function add(){
+				$("#wrap").load("editOrder.html",function(response,status,xhr){
+					addBigMonth();//初始化	
+				});
+				
+			}
+			function editOrder(order_ID){
+				
+			}
+			function showCalendar(){
+				
+			}
+			/*******EditOrder*******/
+			//开始先执行一遍一月的
+			function getDate(){
+				console.log(new Date().getFullYear()+"-"+$("#order_date_month").val()+"-"+$("#order_date_day").val()+" "+getTime());
+				return new Date().getFullYear()+"-"+$("#order_date_month").val()+"-"+$("#order_date_day").val()+" "+getTime();
+			}
+			function monthSelect(){
+				var month = $("#order_date_month").val();
+			 	var big = [1,3,5,7,8,10,12];
+			 	var smail = [3,6,9,10,11];
+			 	for(var i = 0;i<big.length;i++)
+					if(big[i] == month)
+						addBigMonth();
+			 	for(var i = 0;i<smail.length;i++)
+					if(smail[i] == month)
+						addSmailMonth();
+			 	if(month==2)
+			 		addFeb();
+			}
+			function addBigMonth(){
+				console.log('big');
+				for(var i = 1;i<=31;i++)
+					$("#order_date_day").append("<option value="+i+">"+i+"日</option>");
+			}
+			function addSmailMonth(){
+				console.log('smail');
+				for(var i = 1;i<=30;i++)
+					$("#order_date_day").append("<option value="+i+">"+i+"日</option>");
+			}
+			function addFeb(){
+				for(var i = 1;i<=29;i++)
+					$("#order_date_day").append("<option value="+i+">"+i+"日</option>");
+			}
+			function getTime(){
+				return $("#order_date_hour").val()+":"+$("#order_date_minute").val()+":00";
+			}
+			/***********************/
+			function showOrder(ID) {
+				$("#wrap").load("showOrder.html",function(response,status,xhr){
+					addBigMonth();//初始化	
+				});
+			}
+		</script>
+	</head>
+	<body>
+		<div id="menu">
+			<button id = "addOrder" onclick="add()">ADD</button>
+		</div>
+		<div id='wrap'>
+			<!-- 因为日历初始显示的内容要根据js获得的日期-时间来确定，所以html中不写，在js中用另一种形式添加 -->
+		</div>
+	</body>
+</html>

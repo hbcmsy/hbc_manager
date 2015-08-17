@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>EditOrder</title>
+	</head>
+	<body>
+		<table align="center"> 
+			<tr >
+				<td >客户名称</td>
+				<td >
+					<input  id="client_name" size="50"/>
+				</td>
+			</tr>
+			<tr>
+				<td >活动日期</td>
+				<td id="order_date_selecter">
+					<!-- <input  id="order_date" size="50"/> -->
+					<select id="order_date_month" onchange="javascript:monthSelect()">
+						<option value=1>一月</option>
+						<option value=2>二月</option>
+						<option value=3>三月</option>
+						<option value=4>四月</option>
+						<option value=5>五月</option>
+						<option value=6>六月</option>
+						<option value=7>七月</option>
+						<option value=8>八月</option>
+						<option value=9>九月</option>
+						<option value=10>十月</option>
+						<option value=11>十一月</option>
+						<option value=12>十二月</option>
+					</select>
+					<select id="order_date_day">
+						
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>来团时间</td>
+				<td>
+					<input id="order_date_hour" size=4></input>
+					<span>:</span>
+					<input id="order_date_minute" size=4></input>
+				</td>
+			</tr>
+			<tr>
+				<td>团队数量</td>
+				<td>
+					<input  id="client_No"/>
+				</td>
+			</tr>
+			<tr>
+				<td>班级数</td>
+				<td>
+					<input  id="client_class_No"/>
+				</td>
+			</tr>
+			<tr>
+				<td>车辆数</td>
+				<td>
+					<input  id="client_bus_No"/>
+				</td>
+			</tr>
+			<tr>
+				<td>订单添加人</td>
+				<td>
+					<input  id="order_creator"/>
+				</td>
+			</tr>
+			<tr>
+				<td>参加项目</td>
+				<td>
+					<select id="order_refer" name="select">
+            			<option value="1">项目01</option>
+                		<option value="2">项目02</option>
+            		</select>
+				</td>
+			</tr>
+			<tr>
+				<td>预约or签约</td>
+				<td>
+					<select id="order_ordered" name="select">
+            			<option value="0">预约</option>
+                		<option value="1">签约</option>
+            		</select>
+				</td>
+			</tr>	
+			<tr>
+				<td>备注</td>
+				<td>
+					<textarea  id="order_etc" cols="50" rows="10"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<button onclick="saveOrder()">提交</button>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

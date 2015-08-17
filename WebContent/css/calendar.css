@@ -1,0 +1,39 @@
+@charset "utf-8";
+*{padding:0;margin:0;}
+li{list-style: none;}
+
+#wrap{width:85%;margin:20px auto;}
+
+#calendar{width:80%;border:solid 1px #ccc;margin:0 auto;}
+/* 选择年月 的行 */
+#calendar tr#select{height:30px;background:#eee;}
+#calendar tr#select td{clear:both;}
+#calendar tr#select td div{float:left;width:160px;height:30px;line-height:30px;}
+#calendar tr#select #year,#calendar tr#select #month{width:135px;padding-left:20px;}
+#select #year ul,#select #month ul{clear:both;}
+#select #year ul li,#select #month ul li{float:left;width:30px;}
+#select #year ul li input,#select #month ul li input{width:30px;text-align:30px;cursor:pointer;}
+#select #year ul li.selectChange,#select #month ul li.selectChange{width:70px;height:10px;}
+#select #year ul li.selectChange select,#select #month ul li.selectChange select{width:70px;padding-left:2px;cursor:pointer;}
+#select #year ul li.selectChange select option,#select #month ul li.selectChange select option{padding-left:5px;}
+
+/* 星期表头 的行 */
+#calendar tr#week{height:50px;}
+#calendar tr#week td ul{width:100%;clear:both;}
+#calendar tr#week td ul li{float:left;width:14%;height:50px;line-height:50px;text-align:center;margin:0 1px;background:#9999CC;}
+
+/* 某月具体日期 的每一行 */
+#calendar tr#day ul.dayList{width:100%;height:100px;clear:both;margin:2px auto;}
+#calendar tr#day ul.dayList li{float:left;width:14%;height:100px;line-height:50px;text-align:center;margin:0 1px;background:#eee;cursor:pointer;}
+/* 日期占用行数(4-6行)，将不需要显示的行隐藏 */
+#calendar tr#day ul.hide{display:none;}
+/* 周末 的特殊样式 */
+#week .weekend,#day .weekend{color:#EA0000;}
+
+/* 下面几个样式注意顺序，选择器不能简写，否则日历中 今天 的样式会被鼠标滑过的样式替换 */
+/* 鼠标经过某个日期 的特殊样式 */
+#calendar tr#day td ul.dayList li.mouseFloat{background:#FFDCB9;}
+/* 当天是周末 的特殊样式 */
+#calendar tr#day td ul.dayList li.todayWeekend{color:#EA0000;background:#abcdef;font-weight:700;}
+/* 当天 的特殊样式 */
+#calendar tr#day td ul.dayList li.today{background:#abcdef;font-weight:700;}
