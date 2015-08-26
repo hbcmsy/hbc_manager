@@ -41,6 +41,13 @@ public class OrderAction  extends ActionSupport{
 	
 	int year;
 	int month;
+	int date;
+	int day;//星期 表示第几个星期
+	
+	int end_year;
+	int end_month;
+	int end_date;
+	//TODO
 	
 	String json;
 	public String getOrder(){
@@ -55,6 +62,7 @@ public class OrderAction  extends ActionSupport{
 		jsonObject.put("client_name",order.getClient_name());
 		jsonObject.put("client_No",order.getClient_No());
 		jsonObject.put("client_class_No",order.getClient_class_No());
+		jsonObject.put("client_bus_No", order.getClient_bus_No());
 		jsonObject.put("order_creator",order.getOrder_creator());
 		jsonObject.put("order_refer",order.getOrder_refer());
 		jsonObject.put("order_ordered",order.getOrder_ordered());
@@ -63,11 +71,89 @@ public class OrderAction  extends ActionSupport{
     	json = jsonObject.toString();
 		return "OrderJson";
 	}
-	public String getOrders(){
+	public String getOrdersByMonth(){
 		if(!isUser())
 			;//return null; TODO debug
 		JSONArray jsonArray = new JSONArray();
 		List<Order> list = new OrderService().getOrdersByMonth(year,month);
+		//TODO 修改参数 service没有写好
+		if(list==null)
+			return null;
+		for(Order order:list){
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("order_ID",order.getOrder_ID());
+			jsonObject.put("order_date",order.getOrder_date());
+			jsonObject.put("order_create_date",order.getOrder_create_date());
+			jsonObject.put("client_name",order.getClient_name());
+			jsonObject.put("client_No",order.getClient_No());
+			jsonObject.put("client_class_No",order.getClient_class_No());
+			jsonObject.put("order_creator",order.getOrder_creator());
+			jsonObject.put("order_refer",order.getOrder_refer());
+			jsonObject.put("order_ordered",order.getOrder_ordered());
+			jsonObject.put("order_etc",order.getOrder_etc());
+			jsonArray.add(jsonObject);
+		}
+    	json = jsonArray.toString();
+    	return "OrderJson";
+	}
+	public String getOrdersByDay(){
+		//按照星期返回
+		if(!isUser())
+			;//return null; TODO debug
+		JSONArray jsonArray = new JSONArray();
+		List<Order> list = new OrderService().getOrdersByDay(year,month,day);
+		//TODO 修改参数 service没有写好
+		if(list==null)
+			return null;
+		for(Order order:list){
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("order_ID",order.getOrder_ID());
+			jsonObject.put("order_date",order.getOrder_date());
+			jsonObject.put("order_create_date",order.getOrder_create_date());
+			jsonObject.put("client_name",order.getClient_name());
+			jsonObject.put("client_No",order.getClient_No());
+			jsonObject.put("client_class_No",order.getClient_class_No());
+			jsonObject.put("order_creator",order.getOrder_creator());
+			jsonObject.put("order_refer",order.getOrder_refer());
+			jsonObject.put("order_ordered",order.getOrder_ordered());
+			jsonObject.put("order_etc",order.getOrder_etc());
+			jsonArray.add(jsonObject);
+		}
+    	json = jsonArray.toString();
+    	return "OrderJson";
+	}
+	public String getOrdersByDate(){
+		//按照每天返回
+		if(!isUser())
+			;//return null; TODO debug
+		JSONArray jsonArray = new JSONArray();
+		List<Order> list = new OrderService().getOrdersByDate(year,month,date);
+		//TODO 修改参数 service没有写好
+		if(list==null)
+			return null;
+		for(Order order:list){
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("order_ID",order.getOrder_ID());
+			jsonObject.put("order_date",order.getOrder_date());
+			jsonObject.put("order_create_date",order.getOrder_create_date());
+			jsonObject.put("client_name",order.getClient_name());
+			jsonObject.put("client_No",order.getClient_No());
+			jsonObject.put("client_class_No",order.getClient_class_No());
+			jsonObject.put("order_creator",order.getOrder_creator());
+			jsonObject.put("order_refer",order.getOrder_refer());
+			jsonObject.put("order_ordered",order.getOrder_ordered());
+			jsonObject.put("order_etc",order.getOrder_etc());
+			jsonArray.add(jsonObject);
+		}
+    	json = jsonArray.toString();
+    	return "OrderJson";
+	}
+	public String getOrders(){
+		//根据日期查询 需要 6个参数
+		if(!isUser())
+			;//return null; TODO debug
+		JSONArray jsonArray = new JSONArray();
+		List<Order> list = new OrderService().getOrders(year,month,date,end_year,end_month,end_date);
 		//TODO 修改参数 service没有写好
 		if(list==null)
 			return null;
@@ -122,6 +208,23 @@ public class OrderAction  extends ActionSupport{
 		return "OrderJson";
 		
 		
+	}
+	public String deleteOrder(){
+		if(!isUser())
+			;//return null   TODO debug 后修改次内容;
+		
+		if(order_ID>=0){
+			if(!new OrderService().deleteOrder(order_ID))
+				order_ID = -2;
+		}
+		else 
+			return null;
+		
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("order_ID",order_ID);
+		json = jsonObject.toString();
+		
+		return "OrderJson";
 	}
 	boolean isUser(){
 		HttpServletRequest request = ServletActionContext.getRequest();
@@ -214,6 +317,36 @@ public class OrderAction  extends ActionSupport{
 	}
 	public void setJson(String json) {
 		this.json = json;
+	}
+	public int getDate() {
+		return date;
+	}
+	public void setDate(int date) {
+		this.date = date;
+	}
+	public int getDay() {
+		return day;
+	}
+	public void setDay(int day) {
+		this.day = day;
+	}
+	public int getEnd_year() {
+		return end_year;
+	}
+	public void setEnd_year(int end_year) {
+		this.end_year = end_year;
+	}
+	public int getEnd_month() {
+		return end_month;
+	}
+	public void setEnd_month(int end_month) {
+		this.end_month = end_month;
+	}
+	public int getEnd_date() {
+		return end_date;
+	}
+	public void setEnd_date(int end_date) {
+		this.end_date = end_date;
 	}
 	
 }

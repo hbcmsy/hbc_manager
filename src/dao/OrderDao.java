@@ -131,12 +131,13 @@ public class OrderDao {
 	}
 
 	public boolean deleteOrder(int ID) {
+		if(-1==this.addToDeleted(this.getOrder(ID)))
+			return false;
 		Connection con = null;
         PreparedStatement ps = null;
-        ResultSet rs = null;
         try{
             con = SqlHelper.connect();
-            String sql ="DELETE form hbc_order where order_ID = ?";
+            String sql ="DELETE from hbc_order where order_ID = ?";
             ps = con.prepareStatement(sql);	
             ps.setInt(1,ID);
             
@@ -147,16 +148,52 @@ public class OrderDao {
 			e.printStackTrace();
 			return false;
 		}finally {																			//释放资源
-            SqlHelper.closeResult(rs);
             SqlHelper.closePreparedStatement(ps);
             SqlHelper.closeConneciton(con);  
         }
 	}
-
-	public boolean editeOrder(Order order) {
+	public int addToDeleted(Order order) {//添加进已删除表 
 		Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
+        try{
+            con = SqlHelper.connect();
+            String sql ="INSERT INTO hbc_order_deleted(order_date,order_create_date,client_name,client_No,"
+            		+"client_class_No,client_bus_No,order_creator,order_refer,order_ordered,order_etc)"
+            		+"VALUES(?,?,?,?,?,?,?,?,?,?)";
+            ps = con.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);					//建立预处理,设置返回ID
+            ps.setTimestamp(1, order.getOrder_date());
+            ps.setTimestamp(2, order.getOrder_create_date());
+            ps.setString(3, order.getClient_name());
+            ps.setInt(4, order.getClient_No());
+            ps.setInt(5, order.getClient_class_No());
+            ps.setInt(6, order.getClient_bus_No());
+            ps.setString(7, order.getOrder_creator());
+            ps.setInt(8, order.getOrder_refer());
+            ps.setInt(9,order.getOrder_ordered());
+            ps.setString(10, order.getOrder_etc());
+            
+            ps.executeUpdate();
+            int id = -1;																	//初始化返回的article_ID,
+            rs = ps.getGeneratedKeys();
+            if(rs.next()){
+                id = rs.getInt(1);
+            }
+            return id;
+        } catch (SQLException e) {
+			// 
+			e.printStackTrace();
+			return -1;
+		}finally {																			//释放资源
+            SqlHelper.closeResult(rs);
+            SqlHelper.closePreparedStatement(ps);
+            SqlHelper.closeConneciton(con);  
+        }
+		// 返回ID 失败返回-1\
+	}
+	public boolean editeOrder(Order order) {
+		Connection con = null;
+        PreparedStatement ps = null;
         try{
             con = SqlHelper.connect();
             String sql ="UPDATE hbc_order SET order_date = ? , order_create_date = ? ,"
@@ -173,19 +210,17 @@ public class OrderDao {
             ps.setInt(7, order.getOrder_refer());
             ps.setInt(8,order.getOrder_ordered());
             ps.setString(9, order.getOrder_etc());
-            
             ps.setInt(10, order.getOrder_ID());
             
             ps.executeUpdate();
             return true;
         } catch (SQLException e) {
-			// 
 			e.printStackTrace();
 			return false;
-		}finally {																			//释放资源
-            SqlHelper.closeResult(rs);
+		}finally {																			//释放资源s
             SqlHelper.closePreparedStatement(ps);
             SqlHelper.closeConneciton(con);  
+        
         }
 		// 返回ID 失败返回-1\
 	}

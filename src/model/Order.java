@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 		  `order_create_date` timestamp NOT NULL,
 		  `client_name` varchar(200) NOT NULL,
 		  `client_No` int NOT  NULL,
+		  `client_Bus_No` int NOT NULL,
 		  `client_class_No` int NOT NULL,
 		  `order_creator` varchar(30) NOT NULL,
 		  `order_refer` int NOT NULL,
@@ -18,6 +19,22 @@ import java.sql.Timestamp;
 		  PRIMARY KEY (`order_ID`) 
 		) 
  */
+/*			
+		CREATE TABLE `hbc_order_deleted` (
+		  `order_ID` int(11) NOT NULL AUTO_INCREMENT,
+		  `order_date` timestamp NOT NULL,
+		  `order_create_date` timestamp NOT NULL,
+		  `client_name` varchar(200) NOT NULL,
+		  `client_No` int NOT  NULL,
+		  `client_Bus_No` int NOT NULL,
+		  `client_class_No` int NOT NULL,
+		  `order_creator` varchar(30) NOT NULL,
+		  `order_refer` int NOT NULL,
+		  `order_ordered` int NOT NULL,
+		  `order_etc` varchar(1000),
+		  PRIMARY KEY (`order_ID`) 
+) 
+*/
 
 /*			order_ID
 			order_date

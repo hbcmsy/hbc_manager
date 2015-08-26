@@ -41,7 +41,7 @@ $(function(){
 	function calendarCode(codeYear,codeMonth,codeDay,codeFirst){
 		calendar_html = "<table id='calendar'>\n<tr id='select'>\n<td colspan=7>\n<div id='year'>\n<ul>\n<li><input type='button' id='yearPrev' value='<<' /></li>\n<li class='selectChange'>\n<select name='year'>";
 		//年 选择
-		for(var i=1970;i<=codeYear+yearfloor;i++){
+		for(var i=2010;i<=codeYear+yearfloor;i++){
 			if(i == codeYear){
 				calendar_html += "<option value='"+i+"' selected='true'>"+i+"</option>";
 			}else{
@@ -60,17 +60,16 @@ $(function(){
 			}
 		}
 
-		calendar_html += "</select>\n</li>\n<li><input type='button' id='monthNext' value='>' /></li>\n</ul>\n</div>\n<div id='time'>\n</div>\n</td>\n</tr>\n\n<tr id='week'>\n<td>\n<ul>\n<li class='weekend'>星期日</li>\n<li>星期一</li>\n<li>星期二</li>\n<li>星期三</li>\n<li>星期四</li>\n<li>星期五</li>\n<li class='weekend'>星期六</li>\n</ul>\n</td>\n</tr>\n\n<tr id='day'>\n<td colspan=7>\n";
+		calendar_html += "</select>\n</li>\n<li><input type='button' id='monthNext' value='>' /></li>\n</ul>\n</div>\n<div id='time'>\n</div>\n</td>\n</tr>\n\n<tr id='week'>\n<td>\n<ul>\n\n<li>星期一</li>\n<li>星期二</li>\n<li>星期三</li>\n<li>星期四</li>\n<li>星期五</li>\n<li class='weekend'>星期六</li><li class='weekend'>星期日</li>\n</ul>\n</td>\n</tr>\n\n<tr id='day'>\n<td colspan=7>\n";
 
 		//日 列表
 		for(var m=0;m<6;m++){//日期共 4-6 行
 			if(m >= Math.ceil((codeFirst+monthDays[codeMonth])/7)){//第五、六行是否隐藏				
-				calendar_html += "<ul class='dayList hide dayListHide"+m+"'>\n";
+				calendar_html += "<ul id='dayList"+m+"'class='dayList hide dayListHide"+m+"'>\n";
 			}else{
-				calendar_html += "<ul class='dayList dayListHide"+m+"'>\n";
+				calendar_html += "<ul id='dayList"+m+"'class='dayList dayListHide"+m+"'>\n";
 			}	
-
-			for(var n=0;n<7;n++){//列
+			for(var n=1;n<=7;n++){//列
 				if((7*m+n) < codeFirst || (7*m+n) >= (codeFirst+monthDays[codeMonth])){//某月日历中不存在的日期
 					calendar_html += "<li></li>";
 				}else{
@@ -101,7 +100,9 @@ $(function(){
 	//参数依次为 操作对象(每一天) 月份 修改后的第一天是星期几 修改后的总天数 当天的具体日期
 	function dateChange(dateObj,dateMonth,dateFirstDay,dateTotalDays,dateCurrentDay){
 		//判断新日历有几行,需要显示或隐藏
-		var newLine = Math.ceil((dateFirstDay+monthDays[dateMonth])/7);//新行数
+		if(dateFirstDay==0)
+			dateFirstDay = 7;
+		var newLine = Math.ceil((dateFirstDay+monthDays[dateMonth]-1)/7);//新行数
 		if(newLine > dateLine){//增加行
 			for(var i=dateLine;i<newLine;i++){
 				$('.dayListHide'+i).show();
@@ -119,48 +120,79 @@ $(function(){
 		if(dateTotalDays < dateCurrentDay){
 			dateCurrentDay = dateTotalDays;
 		}
+		//刷新所有ID为-1
+		dateObj.attr("id","-1");
 		for(var i=0;i<7*newLine;i++){
-			if(i < dateFirstDay || i> (dateTotalDays+dateFirstDay-1)){//日历中 当月不存在的日期
+			if(i < dateFirstDay-1 || i> (dateTotalDays+dateFirstDay-2)){//日历中 当月不存在的日期
 				dateObj.eq(i).text('').removeClass();
 			}else{
-				if((i+1-dateFirstDay == dateCurrentDay) && (i%7 == 0 || i%7 == 6)){
+				if((i+1-dateFirstDay == dateCurrentDay) && (i%7 == 5 || i%7 == 6)){
 					dateObj.eq(i).removeClass().addClass('todayWeekend');
-				}else if(i%7 == 0 || i%7 == 6){//仅周末
+				}else if(i%7 == 5 || i%7 == 6){//仅周末
 					dateObj.eq(i).removeClass().addClass('weekend');
 				}else if(i+1-dateFirstDay == dateCurrentDay){//仅当天
 					dateObj.eq(i).removeClass().addClass('today');
 				}else{//其他日期
 					dateObj.eq(i).removeClass();
 				}
-				dateObj.eq(i).text(i+1-dateFirstDay);
+				
+				dateObj.eq(i).text(i+2-dateFirstDay);
+				//重设ID
+				dateObj.eq(i).attr("id","day"+(i+2-dateFirstDay));
+				//console.log("i:+"+i);
+				//console.log("i+1-dateFirstDay:"+(i+1-dateFirstDay));
 			}
 		}
 	}
 	/******************     订单部分     **********************/
+
 	function getJSON(year,month){
-		var manage_url = "action/OrderAction!getOrders.action?";
-		
+		var manage_url = "action/OrderAction!getOrdersByMonth.action?";
+		month++;
 		$.getJSON(manage_url+"year="+year+"&month="+month,function(json){ 
 			json = JSON.parse(json);
 			InsertOrder(json);
+			staticJSON = json;
     	});
 	}
 	function InsertOrder(json){
-		for(iterator = 0 ; iterator < json.length;iterator++)
-		{
-			var html = "<ul onclick='showOrder("+json[iterator].order_ID+")'>"+json[iterator].client_name+"</ul>"
-			$("#day"+json[iterator].order_date.date).append(html);
+		var list = [];
+		for(i = 0 ; i<32 ; i++)
+			list[i]=0;//初始化
+		for(i = 0 ; i < json.length ; i++)
+			list[json[i].order_date.date]+=json[i].client_No;//获取每天总人数
+		for(i = 0 ; i < list.length ; i++){//添加
+			if(list[i]==0)
+				continue;
+			var sum = "<p onclick='showOrderDay("+i+","+(monthChange+1)+","+(yearChange)+")'>共:"+(list[i])+"人</p>";
+			$("#day"+i).append(sum);
 		}
-		
+		/*for(iterator = 0 ; iterator < json.length;iterator++)
+		{
+			var html = "<p onclick='showOrder("+json[iterator].order_ID+")'>"+json[iterator].client_name+"</p>"
+			console.log("#day"+json[iterator].order_date.date+"输出")
+			$("#day"+json[iterator].order_date.date).append(html);
+		}*///去掉每天显示内容
 	}
+	function InsertDayButton(){
+		for(i = 0 ; i < 6 ; i++){
+			var button  = $("<button onclick='showOrderByDay(yearChange,monthChange+1,"+(i+1)+")'>></button>");
+			button.height($("#dayList0").height());
+			//var width = $("#dayList0").width()-$("#day1").width()*7-20;
+			button.width("5%");
+			$("#dayList"+i).append(button);
+		}
+	}
+	
 /*************    缓存节点和变量     **************/
 	var rili_location = $('#wrap');//日历代码的位置
 	var calendar_html = '';//记录日历自身代码 的变量
 	var yearfloor = 10;//选择年份从1970到当前时间的后10年
 
 	var someDay = dateNoneParam();//修改后的某一天,默认是当天
-	var yearChange = someDay['year'];//改变后的年份，默认当年
-	var monthChange = someDay['month'];//改变后的年份，默认当月
+	/* 修改为全局变量  */
+	yearChange = someDay['year'];//改变后的年份，默认当年
+	monthChange = someDay['month'];//改变后的年份，默认当月
 	
 	/*************   将日历代码放入相应位置，初始时显示此处内容      **************/
 
@@ -206,6 +238,7 @@ $(function(){
 		someDay = dateWithParam(yearChange,monthChange);
 		//修改 日期 列表
 		dateChange(dateDay,someDay['month'],someDay['firstDay'],monthDays[someDay['month']],today['date']);	
+		getJSON(yearChange,monthChange);
 	});
 
 	yearNext.bind('click',function(){
@@ -222,7 +255,8 @@ $(function(){
 		//新 年-月 下的对象信息
 		someDay = dateWithParam(yearChange,monthChange);
 		//修改 日期 列表
-		dateChange(dateDay,someDay['month'],someDay['firstDay'],monthDays[someDay['month']],today['date']);	
+		dateChange(dateDay,someDay['month'],someDay['firstDay'],monthDays[someDay['month']],today['date']);
+		getJSON(yearChange,monthChange);
 	});
 
 	// 月 按钮事件
@@ -249,7 +283,8 @@ $(function(){
 		//新 年-月 下的对象信息
 		someDay = dateWithParam(yearChange,monthChange);
 		//修改 日期 列表
-		dateChange(dateDay,someDay['month'],someDay['firstDay'],monthDays[someDay['month']],today['date']);	
+		dateChange(dateDay,someDay['month'],someDay['firstDay'],monthDays[someDay['month']],today['date']);
+		getJSON(yearChange,monthChange);
 	});
 
 	monthNext.bind('click',function(){
@@ -275,7 +310,8 @@ $(function(){
 		//新 年-月 下的对象信息
 		someDay = dateWithParam(yearChange,monthChange);
 		//修改 日期 列表
-		dateChange(dateDay,someDay['month'],someDay['firstDay'],monthDays[someDay['month']],today['date']);			
+		dateChange(dateDay,someDay['month'],someDay['firstDay'],monthDays[someDay['month']],today['date']);
+		getJSON(yearChange,monthChange);
 	});
 
 	// 年 选择事件
@@ -290,6 +326,7 @@ $(function(){
 		someDay = dateWithParam(yearChange,monthChange);
 		//修改 日期 列表
 		dateChange(dateDay,someDay['month'],someDay['firstDay'],monthDays[someDay['month']],today['date']);
+		getJSON(yearChange,monthChange);
 	});
 
 	// 月 选择事件
@@ -302,16 +339,18 @@ $(function(){
 		someDay = dateWithParam(yearChange,monthChange);
 		//修改 日期 列表
 		dateChange(dateDay,someDay['month'],someDay['firstDay'],monthDays[someDay['month']],today['date']);
+		getJSON(yearChange,monthChange);
 	});
 
 	/*日 鼠标事件*/
-	dateDay.hover(function(){
+	/*dateDay.hover(function(){
 		$(this).addClass('mouseFloat');
 	},function(){
 		$(this).removeClass('mouseFloat');
 	});
-
+	*/
 	/*************      获取JSON                **************/
-	getJSON(yearChange,monthChange+1);
+	getJSON(yearChange,monthChange);
+	InsertDayButton();
 	
 });
