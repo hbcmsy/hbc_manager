@@ -349,6 +349,10 @@ $(function(){
 		$(this).removeClass('mouseFloat');
 	});
 	*/
+	$.refreshCalendar = function(){
+		dateChange(dateDay,someDay['month'],someDay['firstDay'],monthDays[someDay['month']],today['date']);
+		getJSON(yearChange,monthChange);
+	}
 	/*************      获取JSON                **************/
 	getJSON(yearChange,monthChange);
 	InsertDayButton();

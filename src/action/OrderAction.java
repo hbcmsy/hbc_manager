@@ -52,7 +52,7 @@ public class OrderAction  extends ActionSupport{
 	String json;
 	public String getOrder(){
 		if(!isUser())
-			;//return null; TODO debug
+			return null;
 		JSONObject jsonObject = new JSONObject();
 		Order order = new OrderService().getOrder(order_ID);
 		
@@ -73,7 +73,7 @@ public class OrderAction  extends ActionSupport{
 	}
 	public String getOrdersByMonth(){
 		if(!isUser())
-			;//return null; TODO debug
+			return null;
 		JSONArray jsonArray = new JSONArray();
 		List<Order> list = new OrderService().getOrdersByMonth(year,month);
 		//TODO 修改参数 service没有写好
@@ -99,7 +99,7 @@ public class OrderAction  extends ActionSupport{
 	public String getOrdersByDay(){
 		//按照星期返回
 		if(!isUser())
-			;//return null; TODO debug
+			return null;
 		JSONArray jsonArray = new JSONArray();
 		List<Order> list = new OrderService().getOrdersByDay(year,month,day);
 		//TODO 修改参数 service没有写好
@@ -125,7 +125,7 @@ public class OrderAction  extends ActionSupport{
 	public String getOrdersByDate(){
 		//按照每天返回
 		if(!isUser())
-			;//return null; TODO debug
+			return null;
 		JSONArray jsonArray = new JSONArray();
 		List<Order> list = new OrderService().getOrdersByDate(year,month,date);
 		//TODO 修改参数 service没有写好
@@ -151,7 +151,7 @@ public class OrderAction  extends ActionSupport{
 	public String getOrders(){
 		//根据日期查询 需要 6个参数
 		if(!isUser())
-			;//return null; TODO debug
+			return null;
 		JSONArray jsonArray = new JSONArray();
 		List<Order> list = new OrderService().getOrders(year,month,date,end_year,end_month,end_date);
 		//TODO 修改参数 service没有写好
@@ -179,7 +179,7 @@ public class OrderAction  extends ActionSupport{
 		 * 根据order_ID 值来判断是edit order还是create order 
 		 */
 		if(!isUser())
-			;//return null   TODO debug 后修改次内容;
+			return null;
 		Order order = new Order();
 		
 		order.setOrder_ID(order_ID);	
@@ -211,7 +211,7 @@ public class OrderAction  extends ActionSupport{
 	}
 	public String deleteOrder(){
 		if(!isUser())
-			;//return null   TODO debug 后修改次内容;
+			return null;
 		
 		if(order_ID>=0){
 			if(!new OrderService().deleteOrder(order_ID))
