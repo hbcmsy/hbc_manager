@@ -30,6 +30,8 @@
 		var thisYear = new Date().getFullYear();
 		var thisMonth = new Date().getMonth()+1;
 		showOrderByMonth(thisYear,thisMonth);
+		getUser();
+		
 	});
 	/*********************common  tools*******************/
 	function toJSON() {
@@ -97,8 +99,65 @@
 		for (var i = 1; i <= monthDate; i++)
 			$date.append("<option value="+i+">" + i + "日</option>");
 	}
-	
-	/***********************/
+	/************ user tools ******************/
+	function getUser(){
+		url = "action/UserAction!show";
+		$.getJSON(url,function(json){
+			json = JSON.parse(json);
+			switch(json.user_ID){
+				case -3:
+					showLogin();
+					return;
+				default:
+					showUser(json);
+			}
+			
+		});
+	}
+	function showLogin(){
+		$("#userBar").empty();
+		$("#container").empty();
+		$("#container").load("userLogin.html", function(response, status, xhr) {
+			
+		});
+	}
+	function showUser(json){
+		$("#userBar").empty();
+		$("#userBar").append(json.user_name+"<a onclick='userLogout()'>登出</a>");
+		
+	}
+	function userLogin(user,pwd){
+		$user = $(user);
+		$pwd = $(pwd)
+		console.log("action/UserAction!login?username="+ $user.val() + "&userpwd="+ $pwd.val());
+		$.getJSON("action/UserAction!login?username="+ $user.val() + "&userpwd="+ $pwd.val(),function(json) {
+			json = JSON.parse(json);
+			switch(json.user_ID){
+				case -1:
+					alert("密码或用户名错误");
+					return;
+				case -2:
+					alert("密码或用户名错误");
+					return;
+				default:
+					showUser(json);
+					$.refreshCalendar();
+					showOrderByMonth(new Date().getFullYear(),new Date().getMonth()+1);
+			}
+		});
+			
+	}
+	function userLogout(){
+		$.getJSON("action/UserAction!logOut",function(json){
+			json = JSON.parse(json);
+			if(json.user_ID == -3)
+				alert("登出成功");
+				$.refreshCalendar();
+				getUser();
+		});
+		
+	}
+	/************ order tools ***********/
 	function saveOrder() {
 		//TODO bug fix 如果连续添加,会因为第一次获得了order_ID,导致第二次添加的时候为修改
 
@@ -347,6 +406,8 @@
 		
 	</div>
 	<div id="main">
+		<div id="userBar">
+		</div>
 		<div id="menu" style="margin:auto;">
 			<button id="addOrder" onclick="addOrder()">添加</button>
 			<!-- <input  id="order_date" size="50"/> -->

@@ -15,7 +15,12 @@ public class User {
     String user_name;
     String user_pwd;
     char user_authority;
-
+    public User() {
+    	user_ID = -1;
+    	user_pwd = null;
+    	user_name = null;
+    	
+	}
     public int getUser_ID() {
         return user_ID;
     }

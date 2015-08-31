@@ -6,15 +6,12 @@ package action;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import common.Evn;
-import common.PageList;
-import common.UrlString;
 
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import model.User;
+import net.sf.json.JSONObject;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -28,52 +25,62 @@ import service.UserService;
 public class UserAction  extends ActionSupport{
 	String username="";
 	String userpwd="";
-	User user;
-	//char userauthority;
-    //int user_ID;
-        
-	String userManage = " <a href="+UrlString.UserAction+"!list.action  target=\"blank\">管理</a>";
-	String str = "<a  href=\""+UrlString.RootPath+"/manager/userLogin.jsp\" >登录</a><a  href=\""+UrlString.RootPath+"/hbc/manager/userAdd.jsp\" >注册</a>";
 	
-	PageList<User> plist;
-	String operID;
-	int pageNo = 1;
+	String json;
+	
 	UserService us = new UserService();
+	
+	/*
+	user_ID	-1 没有此用户 
+			-2密码错误
+			-3已登出
+	*/
 	public  String login(){
-		user = us.getUser(username);
-		if(user==null){
-			str = "用户不存在";
-			return "showUser";
+		User user = us.getUser(username);
+		JSONObject jsonObject = new JSONObject();
+		if(user==null)
+			return null;
+		if(user.getUser_ID()==-1){
+			jsonObject.put("user_ID",-1);
+		}else {
+			if(userpwd.equals(user.getUser_pwd())){
+				HttpServletRequest request = ServletActionContext.getRequest();
+				request.getSession().setAttribute("userInfo",user);
+				user =(User)request.getSession().getAttribute("userInfo");
+				jsonObject.put("user_ID",user.getUser_ID());
+				jsonObject.put("user_name", user.getUser_name());
+			}else{
+				jsonObject.put("user_ID",-2);
+			}
 		}
-		if(userpwd.equals(user.getUser_pwd())){
-			str = username+ "<a href="+UrlString.RootPath+"/Action/UserAction!logOut.action>登出</a>";
-			HttpServletRequest request = ServletActionContext.getRequest();
-			request.getSession().setAttribute("userInfo",user);
-			if(isAuthor())
-				str +=userManage;
-		}else{
-			str = "密码错误";
-		}
-		return "showUser";
+		
+		json = jsonObject.toString();
+		return "UserJson";
 	}
 	public  String logOut(){
 		HttpServletRequest request = ServletActionContext.getRequest();
 		request.getSession().removeAttribute("userInfo");
-		return  "showUser";
+		
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("user_ID",-3);
+		json = jsonObject.toString();
+		return  "UserJson";
 	}
 	public  String show(){
 		HttpServletRequest request = ServletActionContext.getRequest();
+		JSONObject jsonObject = new JSONObject();
+		User user;
 		if(request.getSession().getAttribute("userInfo") == null)
-			str = "<a  href="+UrlString.RootPath+"/manager/userLogin.jsp>登录</a><a  href="+UrlString.RootPath+"/manager/userAdd.jsp >注册</a>";
+			jsonObject.put("user_ID",-3);
 		else{
 			user =(User)request.getSession().getAttribute("userInfo");
-			str = user.getUser_name()+ "<a href="+UrlString.RootPath+"/Action/UserAction!logOut.action>登出<a>";
+			jsonObject.put("user_ID",user.getUser_ID());
+			jsonObject.put("user_name", user.getUser_name());
 		}
-		if(isAuthor())
-			str +=userManage;
-		return "showUser";
+		json = jsonObject.toString();
+		return "UserJson";
 	}
-	public String list(){
+	/*public String list(){
 		HttpServletRequest request = ServletActionContext.getRequest();
 		user =(User)request.getSession().getAttribute("userInfo");
                 List<User> userList; 
@@ -140,31 +147,7 @@ public class UserAction  extends ActionSupport{
                     return false;
             }
 	}
-
-	public String getOperID() {
-		return operID;
-	}
-
-	public void setOperID(String operID) {
-		this.operID = operID;
-	}
-		
-	public PageList<User> getPlist() {
-		return plist;
-	}
-
-	public void setPlist(PageList<User> plist) {
-		this.plist = plist;
-	}
-
-	public int getPageNo() {
-		return pageNo;
-	}
-
-	public void setPageNo(int pageNo) {
-		this.pageNo = pageNo;
-	}
-
+*/
 	public String getUsername() {
 		return username;
 	}
@@ -180,21 +163,12 @@ public class UserAction  extends ActionSupport{
 	public void setUserpwd(String userpwd) {
 		this.userpwd = userpwd;
 	}
-
-	public String getStr() {
-		return str;
+	public String getJson() {
+		return json;
+	}
+	public void setJson(String json) {
+		this.json = json;
 	}
 
-	public void setStr(String str) {
-		this.str = str;
-	}
-
-	public UserService getUs() {
-		return us;
-	}
-
-	public void setUs(UserService us) {
-		this.us = us;
-	}
-	
+		
 }

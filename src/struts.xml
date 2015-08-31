@@ -6,9 +6,9 @@
 	<constant name="struts.i18n.encoding" value="utf-8" />
 	<package name="hbc" extends="json-default">
 		<action name="UserAction" class="action.UserAction">
-			<result name="showUser">/manager/userbar.jsp</result>
-			<result name="showUserList">/manager/userList.jsp</result>
-			<result name="error>">/manager/userError.jsp</result>
+			<result name="UserJson" type="json">
+				<param name="root">json</param>
+			</result>
 		</action>
 		<action name="OrderAction" class="action.OrderAction">
 			<result name="OrderJson" type="json">
