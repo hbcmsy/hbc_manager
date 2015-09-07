@@ -123,7 +123,7 @@
 	}
 	function showUser(json){
 		$("#userBar").empty();
-		$("#userBar").append(json.user_name+"<a onclick='userLogout()'>登出</a>");
+		$("#userBar").append(json.user_name+"<a href='javascript:userLogout()'>登出</a>");
 		
 	}
 	function userLogin(user,pwd){
@@ -406,7 +406,7 @@
 		
 	</div>
 	<div id="main">
-		<div id="userBar">
+		
 		</div>
 		<div id="menu" style="margin:auto;">
 			<button id="addOrder" onclick="addOrder()">添加</button>
@@ -449,6 +449,7 @@
 				
 			</select>
 			<button onclick="showOrderSelect($('#date_year').val(),$('#date_month').val(),$('#date_date').val(),$('#end_date_year').val(),$('#end_date_month').val(),$('#end_date_date').val())">查询</button>
+			<div id="userBar">
 		</div>
 		<div> 
 			<div id='wrap'>		
