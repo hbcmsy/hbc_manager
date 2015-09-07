@@ -4,7 +4,7 @@ li{list-style: none;}
 
 #wrap{width:35%;margin:20px auto;float:left;}
 
-#calendar{width:100%;border:solid 1px #ccc;margin:0 auto;min-width:470px;overflow:auto;}
+#calendar{width:100%;border:solid 1px #ccc;margin:0 auto;min-width:430px;}
 /* 选择年月 的行 */
 #calendar tr#select{height:30px;background:#eee;}
 #calendar tr#select td{clear:both;}

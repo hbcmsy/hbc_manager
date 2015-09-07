@@ -164,7 +164,7 @@ $(function(){
 		for(i = 0 ; i < list.length ; i++){//添加
 			if(list[i]==0)
 				continue;
-			var sum = "<p onclick='showOrderDay("+i+","+(monthChange+1)+","+(yearChange)+")'>共:"+(list[i])+"人</p>";
+			var sum = "<p onclick='showOrderByDate("+(yearChange)+","+(monthChange+1)+","+i+")'>共:"+(list[i])+"人</p>";
 			$("#day"+i).append(sum);
 		}
 		/*for(iterator = 0 ; iterator < json.length;iterator++)

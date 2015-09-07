@@ -32,6 +32,12 @@
 		showOrderByMonth(thisYear,thisMonth);
 		getUser();
 		
+		//var $width = $("#addOrder").width()*2+$("#date_year").width()*2+$("#date_month").width()*2+$("#date_date").width()*2;
+		$("#menu").css("width","500px");
+		$("#menu").css("margin","auto");
+		$("#menu").css("padding-bottom","20px");
+		
+		
 	});
 	/*********************common  tools*******************/
 	function toJSON() {
@@ -116,8 +122,8 @@
 	}
 	function showLogin(){
 		$("#userBar").empty();
-		$("#container").empty();
-		$("#container").load("userLogin.html", function(response, status, xhr) {
+		$("#list").empty();
+		$("#list").load("userLogin.html", function(response, status, xhr) {
 			
 		});
 	}
@@ -302,7 +308,7 @@
 		var in_date = date;
 		var in_month = month;
 		var in_year = year;
-		$.getJSON(manage_url + "year=" + in_year + "&month=" + in_month, function(json) {
+		$.getJSON(manage_url + "year=" + in_year + "&month=" + in_month +  "&date=" + in_date, function(json) {
 			json = JSON.parse(json);
 			listOrder(json);
 		});
@@ -339,8 +345,8 @@
 		
 		table.append(title_tr);
 		
-		$("#container").empty();
-		$("#container").append(table);
+		$("#list").empty();
+		$("#list").append(table);
 		
 		var container_min_width;
 		
@@ -392,11 +398,11 @@
 		counter.css("font-size","large");
 		table.prepend(counter);
 		
-		$("#container").css("width","65%");
+		$("#container").css("width","60%");
 		$("#container").css("float","right");
 		$("#container").css("margin-top","20px");
-		$("#container").css("min-width",container_min_width);
-		$("#container").css("overflow","auto");
+		//$("#container").css("min-width",container_min_width);
+		//$("#container").css("overflow","auto");
 	}
 </script>
 </head>
@@ -406,58 +412,58 @@
 		
 	</div>
 	<div id="main">
-		
-		</div>
-		<div id="menu" style="margin:auto;">
-			<button id="addOrder" onclick="addOrder()">添加</button>
-			<!-- <input  id="order_date" size="50"/> -->
-			<select id="date_year">
-			</select>
-			<select id="date_month" onchange="javascript:monthSelect($('#date_year'),this,$('#date_date'))">
-				<option value=1>一月</option>
-				<option value=2>二月</option>
-				<option value=3>三月</option>
-				<option value=4>四月</option>
-				<option value=5>五月</option>
-				<option value=6>六月</option>
-				<option value=7>七月</option>
-				<option value=8>八月</option>
-				<option value=9>九月</option>
-				<option value=10>十月</option>
-				<option value=11>十一月</option>
-				<option value=12>十二月</option>
-			</select>
-			<select id="date_date">
-			</select>
-			<select id="end_date_year">
-			</select>	
-			<select id="end_date_month" onchange="javascript:monthSelect($('end_date_year'),this,$('#end_date_date'))">
-				<option value=1>一月</option>
-				<option value=2>二月</option>
-				<option value=3>三月</option>
-				<option value=4>四月</option>
-				<option value=5>五月</option>
-				<option value=6>六月</option>
-				<option value=7>七月</option>
-				<option value=8>八月</option>
-				<option value=9>九月</option>
-				<option value=10>十月</option>
-				<option value=11>十一月</option>
-				<option value=12>十二月</option>
-			</select>
-			<select id="end_date_date">
-				
-			</select>
-			<button onclick="showOrderSelect($('#date_year').val(),$('#date_month').val(),$('#date_date').val(),$('#end_date_year').val(),$('#end_date_month').val(),$('#end_date_date').val())">查询</button>
-			<div id="userBar">
+		<div>			
+			<div style="float:right;" id="userBar"></div>
 		</div>
 		<div> 
 			<div id='wrap'>		
 			<!-- 因为日历初始显示的内容要根据js获得的日期-时间来确定，所以html中不写，在js中用另一种形式添加 -->
 			</div>
-		
 			<div id="container">
-			<!-- 订单显示区域 -->
+				<div id="menu">
+					<button id="addOrder" onclick="addOrder()">添加</button>
+					<!-- <input  id="order_date" size="50"/> -->
+					<select id="date_year">
+					</select>
+					<select id="date_month" onchange="javascript:monthSelect($('#date_year'),this,$('#date_date'))">
+						<option value=1>一月</option>
+						<option value=2>二月</option>
+						<option value=3>三月</option>
+						<option value=4>四月</option>
+						<option value=5>五月</option>
+						<option value=6>六月</option>
+						<option value=7>七月</option>
+						<option value=8>八月</option>
+						<option value=9>九月</option>
+						<option value=10>十月</option>
+						<option value=11>十一月</option>
+						<option value=12>十二月</option>
+					</select>
+					<select id="date_date">
+					</select>
+					<select id="end_date_year">
+					</select>	
+					<select id="end_date_month" onchange="javascript:monthSelect($('end_date_year'),this,$('#end_date_date'))">
+						<option value=1>一月</option>
+						<option value=2>二月</option>
+						<option value=3>三月</option>
+						<option value=4>四月</option>
+						<option value=5>五月</option>
+						<option value=6>六月</option>
+						<option value=7>七月</option>
+						<option value=8>八月</option>
+						<option value=9>九月</option>
+						<option value=10>十月</option>
+						<option value=11>十一月</option>
+						<option value=12>十二月</option>
+					</select>
+					<select id="end_date_date">
+						
+					</select>
+					<button onclick="showOrderSelect($('#date_year').val(),$('#date_month').val(),$('#date_date').val(),$('#end_date_year').val(),$('#end_date_month').val(),$('#end_date_date').val())">查询</button>
+				</div>
+					<!-- 订单显示区域 -->
+				<div id="list"></div>
 			</div>
 		</div>
 	</div>
