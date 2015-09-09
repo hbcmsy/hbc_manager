@@ -23,6 +23,26 @@
 	var order_ordered;
 	var order_etc;
 	$(document).ready(function(){
+		/* css */
+		var side = true;
+		if($(window).width()>=1100){
+			show1100();	
+			side = true;
+		}else{
+			showNoSide();
+			side = false;
+		}
+		/**add event to adjust css\div**/
+		$(window).resize(function() {
+			if($(window).width()>1100 && side==false){
+				show1100();		
+				side = true;
+			}
+			if($(window).width()<1100 && side==true){
+				showNoSide();
+				side = false;
+			}	
+		});
 		yearSelect($("#date_year"));
 		yearSelect($("#end_date_year"));
 		monthSelect($("#date_year"),$("#date_month"),$("#date_date"));
@@ -33,17 +53,39 @@
 		getUser();
 		
 		//var $width = $("#addOrder").width()*2+$("#date_year").width()*2+$("#date_month").width()*2+$("#date_date").width()*2;
-		$("#menu").css("width","500px");
-		$("#menu").css("margin","auto");
-		$("#menu").css("padding-bottom","20px");
-		$("#menu").css("padding-top","20px");
-		$("#container").css("width","60%");
-		$("#container").css("float","right");
-		$("#container").css("margin-top","20px");
 		
 		
 		
 	});
+	/* css\div adjust*/
+	function show1100(){
+		$("#wrap").css("width","35%");
+		$("#wrap").css("float","left");
+		
+		$("#menu").css("width","500px");
+		$("#menu").css("margin","auto");
+		$("#menu").css("padding-bottom","20px");
+		$("#menu").css("padding-top","20px");
+		
+		//$("#container").css("margin","auto");
+		$("#container").css("width","60%");
+		$("#container").css("float","right");
+		$("#container").css("margin-top","20px");	
+	}
+	function showNoSide(){
+		$("#wrap").css("width","85%");
+		$("#wrap").css("float","none");
+		
+		$("#menu").css("width","500px");
+		$("#menu").css("margin","auto");
+		$("#menu").css("padding-bottom","20px");
+		$("#menu").css("padding-top","20px");
+		
+		$("#container").css("margin","auto");
+		$("#container").css("width","85%");
+		$("#container").css("float","none");
+		$("#container").css("margin-top","20px");	
+	}
 	/*********************common  tools*******************/
 	function toJSON() {
 		var j = {};
