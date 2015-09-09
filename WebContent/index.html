@@ -36,6 +36,11 @@
 		$("#menu").css("width","500px");
 		$("#menu").css("margin","auto");
 		$("#menu").css("padding-bottom","20px");
+		$("#menu").css("padding-top","20px");
+		$("#container").css("width","60%");
+		$("#container").css("float","right");
+		$("#container").css("margin-top","20px");
+		
 		
 		
 	});
@@ -206,7 +211,7 @@
 	}
 	function addOrder() {
 	//TODO 修改===
-	$("#container").load("editOrder.html", function(response, status, xhr) {
+	$("#list").load("editOrder.html", function(response, status, xhr) {
 		yearSelect($("#order_date_year"));
 		monthSelect($("#order_date_year"),$("#order_date_month"),$("#order_date_date"));
 		});
@@ -214,7 +219,7 @@
 	}
 	function editOrder(ID) {
 		order_ID = ID;
-		$("#container").load("editOrder.html",function(response, status, xhr){
+		$("#list").load("editOrder.html",function(response, status, xhr){
 			yearSelect($("#order_date_year"));
 			monthSelect($("#order_date_year"),$("#order_date_month"),$("#order_date_date"));
 			$.getJSON("action/OrderAction!getOrder?order_ID="+ ID,function(json) {
@@ -253,7 +258,7 @@
 			
 	}
 	function showOrder(ID) {
-		$("#container").load("showOrder.html",function(response, status, xhr) {
+		$("#list").load("showOrder.html",function(response, status, xhr) {
 			$.getJSON("action/OrderAction!getOrder?order_ID="+ ID,function(json) {
 				json = JSON.parse(json);
 				console.log(json);
@@ -398,11 +403,7 @@
 		counter.css("font-size","large");
 		table.prepend(counter);
 		
-		$("#container").css("width","60%");
-		$("#container").css("float","right");
-		$("#container").css("margin-top","20px");
-		//$("#container").css("min-width",container_min_width);
-		//$("#container").css("overflow","auto");
+		
 	}
 </script>
 </head>
