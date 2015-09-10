@@ -23,6 +23,26 @@
 	var order_ordered;
 	var order_etc;
 	$(document).ready(function(){
+		/* css */
+		var side = true;
+		if($(window).width()>=1100){
+			show1100();	
+			side = true;
+		}else{
+			showNoSide();
+			side = false;
+		}
+		/**add event to adjust css\div**/
+		$(window).resize(function() {
+			if($(window).width()>1100 && side==false){
+				show1100();		
+				side = true;
+			}
+			if($(window).width()<1100 && side==true){
+				showNoSide();
+				side = false;
+			}	
+		});
 		yearSelect($("#date_year"));
 		yearSelect($("#end_date_year"));
 		monthSelect($("#date_year"),$("#date_month"),$("#date_date"));
@@ -32,7 +52,37 @@
 		showOrderByMonth(thisYear,thisMonth);
 		getUser();
 		
+		//var $width = $("#addOrder").width()*2+$("#date_year").width()*2+$("#date_month").width()*2+$("#date_date").width()*2;
 	});
+	/* css\div adjust*/
+	function show1100(){
+		$("#wrap").css("width","35%");
+		$("#wrap").css("float","left");
+		
+		$("#menu").css("width","500px");
+		$("#menu").css("margin","auto");
+		$("#menu").css("padding-bottom","20px");
+		$("#menu").css("padding-top","20px");
+		
+		//$("#container").css("margin","auto");
+		$("#container").css("width","60%");
+		$("#container").css("float","right");
+		$("#container").css("margin-top","20px");	
+	}
+	function showNoSide(){
+		$("#wrap").css("width","85%");
+		$("#wrap").css("float","none");
+		
+		$("#menu").css("width","500px");
+		$("#menu").css("margin","auto");
+		$("#menu").css("padding-bottom","20px");
+		$("#menu").css("padding-top","20px");
+		
+		$("#container").css("margin","auto");
+		$("#container").css("width","85%");
+		$("#container").css("float","none");
+		$("#container").css("margin-top","20px");	
+	}
 	/*********************common  tools*******************/
 	function toJSON() {
 		var j = {};
@@ -116,14 +166,15 @@
 	}
 	function showLogin(){
 		$("#userBar").empty();
-		$("#container").empty();
-		$("#container").load("userLogin.html", function(response, status, xhr) {
+		$("#list").empty();
+		$("#list").load("userLogin.html", function(response, status, xhr) {
 			
 		});
 	}
 	function showUser(json){
 		$("#userBar").empty();
-		$("#userBar").append(json.user_name+"<a onclick='userLogout()'>登出</a>");
+		$("#userBar").append(json.user_name+"<a href='javascript:userLogout()'>登出</a>");
+
 		
 	}
 	function userLogin(user,pwd){
@@ -200,7 +251,7 @@
 	}
 	function addOrder() {
 	//TODO 修改===
-	$("#container").load("editOrder.html", function(response, status, xhr) {
+	$("#list").load("editOrder.html", function(response, status, xhr) {
 		yearSelect($("#order_date_year"));
 		monthSelect($("#order_date_year"),$("#order_date_month"),$("#order_date_date"));
 		});
@@ -208,7 +259,7 @@
 	}
 	function editOrder(ID) {
 		order_ID = ID;
-		$("#container").load("editOrder.html",function(response, status, xhr){
+		$("#list").load("editOrder.html",function(response, status, xhr){
 			yearSelect($("#order_date_year"));
 			monthSelect($("#order_date_year"),$("#order_date_month"),$("#order_date_date"));
 			$.getJSON("action/OrderAction!getOrder?order_ID="+ ID,function(json) {
@@ -247,7 +298,7 @@
 			
 	}
 	function showOrder(ID) {
-		$("#container").load("showOrder.html",function(response, status, xhr) {
+		$("#list").load("showOrder.html",function(response, status, xhr) {
 			$.getJSON("action/OrderAction!getOrder?order_ID="+ ID,function(json) {
 				json = JSON.parse(json);
 				console.log(json);
@@ -302,7 +353,7 @@
 		var in_date = date;
 		var in_month = month;
 		var in_year = year;
-		$.getJSON(manage_url + "year=" + in_year + "&month=" + in_month, function(json) {
+		$.getJSON(manage_url + "year=" + in_year + "&month=" + in_month +  "&date=" + in_date, function(json) {
 			json = JSON.parse(json);
 			listOrder(json);
 		});
@@ -339,8 +390,8 @@
 		
 		table.append(title_tr);
 		
-		$("#container").empty();
-		$("#container").append(table);
+		$("#list").empty();
+		$("#list").append(table);
 		
 		var container_min_width;
 		
@@ -392,71 +443,67 @@
 		counter.css("font-size","large");
 		table.prepend(counter);
 		
-		$("#container").css("width","65%");
-		$("#container").css("float","right");
-		$("#container").css("margin-top","20px");
-		$("#container").css("min-width",container_min_width);
-		$("#container").css("overflow","auto");
+		
 	}
 </script>
 </head>
 <body>
 	<div id="head">
 		<p style="font-size:xx-large; text-align:center;">河北村民俗园 订单 录入系统</p>
-		
 	</div>
 	<div id="main">
-		<div id="userBar">
-		</div>
-		<div id="menu" style="margin:auto;">
-			<button id="addOrder" onclick="addOrder()">添加</button>
-			<!-- <input  id="order_date" size="50"/> -->
-			<select id="date_year">
-			</select>
-			<select id="date_month" onchange="javascript:monthSelect($('#date_year'),this,$('#date_date'))">
-				<option value=1>一月</option>
-				<option value=2>二月</option>
-				<option value=3>三月</option>
-				<option value=4>四月</option>
-				<option value=5>五月</option>
-				<option value=6>六月</option>
-				<option value=7>七月</option>
-				<option value=8>八月</option>
-				<option value=9>九月</option>
-				<option value=10>十月</option>
-				<option value=11>十一月</option>
-				<option value=12>十二月</option>
-			</select>
-			<select id="date_date">
-			</select>
-			<select id="end_date_year">
-			</select>	
-			<select id="end_date_month" onchange="javascript:monthSelect($('end_date_year'),this,$('#end_date_date'))">
-				<option value=1>一月</option>
-				<option value=2>二月</option>
-				<option value=3>三月</option>
-				<option value=4>四月</option>
-				<option value=5>五月</option>
-				<option value=6>六月</option>
-				<option value=7>七月</option>
-				<option value=8>八月</option>
-				<option value=9>九月</option>
-				<option value=10>十月</option>
-				<option value=11>十一月</option>
-				<option value=12>十二月</option>
-			</select>
-			<select id="end_date_date">
-				
-			</select>
-			<button onclick="showOrderSelect($('#date_year').val(),$('#date_month').val(),$('#date_date').val(),$('#end_date_year').val(),$('#end_date_month').val(),$('#end_date_date').val())">查询</button>
+		<div>
+			<div style="float:right;" id="userBar"></div>
 		</div>
 		<div> 
 			<div id='wrap'>		
 			<!-- 因为日历初始显示的内容要根据js获得的日期-时间来确定，所以html中不写，在js中用另一种形式添加 -->
 			</div>
-		
 			<div id="container">
-			<!-- 订单显示区域 -->
+				<div id="menu">
+					<button id="addOrder" onclick="addOrder()">添加</button>
+					<!-- <input  id="order_date" size="50"/> -->
+					<select id="date_year">
+					</select>
+					<select id="date_month" onchange="javascript:monthSelect($('#date_year'),this,$('#date_date'))">
+						<option value=1>一月</option>
+						<option value=2>二月</option>
+						<option value=3>三月</option>
+						<option value=4>四月</option>
+						<option value=5>五月</option>
+						<option value=6>六月</option>
+						<option value=7>七月</option>
+						<option value=8>八月</option>
+						<option value=9>九月</option>
+						<option value=10>十月</option>
+						<option value=11>十一月</option>
+						<option value=12>十二月</option>
+					</select>
+					<select id="date_date">
+					</select>
+					<select id="end_date_year">
+					</select>	
+					<select id="end_date_month" onchange="javascript:monthSelect($('end_date_year'),this,$('#end_date_date'))">
+						<option value=1>一月</option>
+						<option value=2>二月</option>
+						<option value=3>三月</option>
+						<option value=4>四月</option>
+						<option value=5>五月</option>
+						<option value=6>六月</option>
+						<option value=7>七月</option>
+						<option value=8>八月</option>
+						<option value=9>九月</option>
+						<option value=10>十月</option>
+						<option value=11>十一月</option>
+						<option value=12>十二月</option>
+					</select>
+					<select id="end_date_date">
+						
+					</select>
+					<button onclick="showOrderSelect($('#date_year').val(),$('#date_month').val(),$('#date_date').val(),$('#end_date_year').val(),$('#end_date_month').val(),$('#end_date_date').val())">查询</button>
+				</div>
+					<!-- 订单显示区域 -->
+				<div id="list"></div>
 			</div>
 		</div>
 	</div>
