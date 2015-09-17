@@ -22,6 +22,9 @@
 	var order_refer;
 	var order_ordered;
 	var order_etc;
+	/*************************************/
+	var get_list_url;//储存查询的url,用于进行操作后的返回
+	/*************************************/
 	$(document).ready(function(){
 		/* css */
 		var side = true;
@@ -210,8 +213,6 @@
 	}
 	/************ order tools ***********/
 	function saveOrder() {
-		//TODO bug fix 如果连续添加,会因为第一次获得了order_ID,导致第二次添加的时候为修改
-
 		//客户名称
 		client_name = $("#client_name").val();
 		//活动日期时间</td>
@@ -234,7 +235,7 @@
 		//<option value="1">签约</option>
 		//备注</td>
 		order_etc = $("#order_etc").val();
-
+		
 		$.post("action/OrderAction!saveOrder", toJSON(), function(json) {
 			json = JSON.parse(json);
 			console.log(json);
@@ -242,10 +243,13 @@
 				//order_ID = json["order_ID"];
 				alert("保存成功");
 				order_ID = -1;
-				showOrderByMonth(new Date().getFullYear(),new Date().getMonth()+1);
+				reshowOrderList();
+				//showOrderByMonth(new Date().getFullYear(),new Date().getMonth()+1);
 				//showCalendar();
-			} else
+			}else{
 				alert("保存失败!");
+				reshowOrderList();
+			}
 		});
 
 	}
@@ -285,17 +289,28 @@
 		});
 	}
 	function deleteOrder(ID){
+		if(!window.confirm("确定删除订单???"))
+			return;
 		$.getJSON("action/OrderAction!deleteOrder?order_ID="+ ID,function(json) {
 			json = JSON.parse(json);
 			console.log(json);
 			if (json["order_ID"] != -2) {
 				alert("删除成功");
 				order_ID = -1;
+				reshowOrderList();
 				
-			} else
+			}else{
 				alert("删除失败!");
+				reshowOrderList();
+			}
 		});
 			
+	}
+	function reshowOrderList(){
+		$.getJSON(get_list_url, function(json) {
+			json = JSON.parse(json);
+			listOrder(json);
+		});
 	}
 	function showOrder(ID) {
 		$("#list").load("showOrder.html",function(response, status, xhr) {
@@ -330,6 +345,7 @@
 		if( year>3000 || year<2000 || month>12 || month<1)
 			return ;
 		console.log(select_url + "year=" + year + "&month=" + month);
+		get_list_url = select_url + "year=" + year + "&month=" + month;
 		$.getJSON(select_url + "year=" + year + "&month=" + month, function(json) {
 			json = JSON.parse(json);
 			listOrder(json);
@@ -342,6 +358,7 @@
 		if( year>3000 || year<2000 || month>12 || month<1 || day>5 )
 			return ;
 		console.log(select_url + "year=" + year + "&month=" + month + "&day=" + day);
+		get_list_url = select_url + "year=" + year + "&month=" + month + "&day=" + day;
 		$.getJSON(select_url + "year=" + year + "&month=" + month + "&day=" + day, function(json) {
 			json = JSON.parse(json);
 			listOrder(json);
@@ -353,6 +370,7 @@
 		var in_date = date;
 		var in_month = month;
 		var in_year = year;
+		get_list_url = manage_url + "year=" + in_year + "&month=" + in_month +  "&date=" + in_date;
 		$.getJSON(manage_url + "year=" + in_year + "&month=" + in_month +  "&date=" + in_date, function(json) {
 			json = JSON.parse(json);
 			listOrder(json);
@@ -363,6 +381,7 @@
 		if( year>3000 || year<2000 || month>12 || month<1 || date>31 || date<1 || end_year>3000 || end_year<2000 || end_month>12 || end_month<1 || end_date>31 || end_date<1)
 			return ;
 		console.log(select_url + "year=" + year + "&month=" + month + "&date=" + date + "&end_year=" + end_year + "&end_month=" + end_month + "&end_date=" + end_date);
+		get_list_url = select_url + "year=" + year + "&month=" + month + "&date=" + date + "&end_year=" + end_year + "&end_month=" + end_month + "&end_date=" + end_date;
 		$.getJSON(select_url + "year=" + year + "&month=" + month + "&date=" + date + "&end_year=" + end_year + "&end_month=" + end_month + "&end_date=" + end_date, function(json) {
 			json = JSON.parse(json);
 			listOrder(json);
