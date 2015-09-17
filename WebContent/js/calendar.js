@@ -181,6 +181,8 @@ $(function(){
 			//var width = $("#dayList0").width()-$("#day1").width()*7-20;
 			button.width("5%");
 			$("#dayList"+i).append(button);
+			//for the fucking IE and Edge
+			button.css("width","5%");
 		}
 	}
 	
