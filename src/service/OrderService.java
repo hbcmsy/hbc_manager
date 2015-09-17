@@ -30,18 +30,10 @@ public class OrderService {
 		int big[] = {1,3,5,7,8,10,12};
 	 	int smail[] = {3,6,9,10,11};
 	 	//Reset date_end
-	 	if(month==2&&((year%4)!=0)){
-	 		if(date_end > 28)
-		 		date_end = 28;
-	 	}
-	 	else{	
-	 		if(year%100 == 0 && year%400 != 0 && date_end>28){
-	 			date_end = 28;
- 			}
-	 		else{ 
-	 			if(date_end>29)
-	 				date_end = 29;
-	 		}
+	 	if(month==2){
+	 		int temp = this.getFebDate(year);
+	 		if(date_end > temp)
+	 			date_end = temp;
 	 	}
 	 	for(int i = 0;i<big.length;i++)
 			if(big[i] == month && date_end > 31)
@@ -55,7 +47,7 @@ public class OrderService {
 			date = 1;
 		calendar.set(year, month-1, date, 0, 0);
 		Timestamp f = new Timestamp(calendar.getTimeInMillis());
-		calendar.set(year, month-1, date_end, 0, 0);
+		calendar.set(year, month-1, date_end, 23, 59);
 		Timestamp l = new Timestamp(calendar.getTimeInMillis());
 		calendar.clear();
 		return new OrderDao().getOrders(f, l);
@@ -68,17 +60,9 @@ public class OrderService {
 		calendar.clear();
 		int big[] = {1,3,5,7,8,10,12};
 	 	int smail[] = {3,6,9,10,11};
-	 	if(month==2&&((year%4)!=0)){
-	 		calendar.set(year, month-1,28, 23, 59);
+	 	if(month==2){
+	 		calendar.set(year, month-1,this.getFebDate(year), 23, 59);
  		}
-	 	else{
-	 		if(year%100 == 0 && year%400 != 0){
-	 			calendar.set(year, month-1,28, 23, 59);
- 			}
-	 		else{ 
-	 			calendar.set(year, month-1,29, 23, 59);
-	 		}
-	 	}
 	 	for(int i = 0;i<big.length;i++)
 			if(big[i] == month)
 				calendar.set(year, month-1, 31,23,59);
@@ -120,7 +104,16 @@ public class OrderService {
 	public boolean editOrder(Order order){
 		return new OrderDao().editeOrder(order);
 	}
-	
+	private int getFebDate(int year) {
+		int date_end = 29;
+ 		if((year%4) != 0){
+			date_end = 28;
+ 		}
+		if(year%100 == 0 && year%400 != 0){
+			date_end = 28;
+		}
+		return date_end;
+	}
 	
 	
 }
