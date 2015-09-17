@@ -130,7 +130,7 @@
 	function monthSelect(year,month,date) {
 		var month_val = $(month).val();
 		var $date = $(date);
-		//var $date = $(date); 
+		var date_val = $date.val();//保存上次存储的日期,以便后面再加上
 		var monthDate = 33;
 		var year_val = $(year).val();
 		var big = [ 1, 3, 5, 7, 8, 10, 12 ];
@@ -151,6 +151,7 @@
 		$date.empty();
 		for (var i = 1; i <= monthDate; i++)
 			$date.append("<option value="+i+">" + i + "日</option>");
+		$date.val(date_val);
 	}
 	/************ user tools ******************/
 	function getUser(){
