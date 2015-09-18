@@ -5,7 +5,7 @@
 <title>HBCMSY order manager</title>
 <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="js/calendar.js"></script>
-<link type="text/css" rel="stylesheet" href="css/calendar.css" />
+<link type="text/css" rel="stylesheet" href="css/m.css" />
 <script type="text/javascript">
 	/***************************************/
 	var staticJSON;
@@ -26,32 +26,37 @@
 	var get_list_url;//储存查询的url,用于进行操作后的返回
 	/*************************************/
 	$(document).ready(function(){
-		//if it's mobile
-		var userAgent = navigator.userAgent;
-		userAgent = userAgent.toLowerCase();
-		if(userAgent.match("mobile")!==null){
-			window.location.href="m.html";
-		}
 		/* css */
-		var side = true;
-		if($(window).width()>=1100){
-			show1100();	
-			side = true;
+		var userAgent = navigator.userAgent
+		console.log(userAgent);
+		userAgent = userAgent.toLowerCase();
+		var a = userAgent.match("mobile");
+		if(a!=null){
+			console.log("mobile!!");
+			//alert("mobile");
 		}else{
-			showNoSide();
-			side = false;
+			console.log('PC...');
+			//alert("PC...");
 		}
-		/**add event to adjust css\div**/
-		$(window).resize(function() {
-			if($(window).width()>1100 && side==false){
-				show1100();		
-				side = true;
-			}
-			if($(window).width()<1100 && side==true){
-				showNoSide();
-				side = false;
-			}	
-		});
+		
+		var winWidth = $(window).width();
+		var winHeight = $(window).height();
+		//设置成上下模式
+		
+		$("#calendar tr#week td ul li").css("height",winHeight/20);
+		
+		$("#calendar tr#day ul.dayList li").css("height",winHeight/7);
+		$("#calendar tr#day ul.dayList button").css("height",winHeight/7);
+		
+		
+		$("#select ul li select").css("height",winHeight/30);
+		$("#select ul li select").css("width",winWidth/10);
+		
+		$("#select ul li input").css("height",winHeight/30);
+		$("#select ul li input").css("width",winWidth/10);
+		
+		
+		
 		yearSelect($("#date_year"));
 		yearSelect($("#end_date_year"));
 		monthSelect($("#date_year"),$("#date_month"),$("#date_date"));
@@ -61,37 +66,12 @@
 		showOrderByMonth(thisYear,thisMonth);
 		getUser();
 		
+		
+		var menuWidth = $("#date_year").width()*2+$("#date_month").width()*2+$("#date_date").width()*2+$("#date_date").height()*7/3.5+$("#addOrder").width()*2;
+		$("#menu").width(menuWidth);
+		
 		//var $width = $("#addOrder").width()*2+$("#date_year").width()*2+$("#date_month").width()*2+$("#date_date").width()*2;
 	});
-	/* css\div adjust*/
-	function show1100(){
-		$("#wrap").css("width","35%");
-		$("#wrap").css("float","left");
-		
-		$("#menu").css("width","500px");
-		$("#menu").css("margin","auto");
-		$("#menu").css("padding-bottom","20px");
-		$("#menu").css("padding-top","20px");
-		
-		//$("#container").css("margin","auto");
-		$("#container").css("width","60%");
-		$("#container").css("float","right");
-		$("#container").css("margin-top","20px");	
-	}
-	function showNoSide(){
-		$("#wrap").css("width","85%");
-		$("#wrap").css("float","none");
-		
-		$("#menu").css("width","500px");
-		$("#menu").css("margin","auto");
-		$("#menu").css("padding-bottom","20px");
-		$("#menu").css("padding-top","20px");
-		
-		$("#container").css("margin","auto");
-		$("#container").css("width","85%");
-		$("#container").css("float","none");
-		$("#container").css("margin-top","20px");	
-	}
 	/*********************common  tools*******************/
 	function toJSON() {
 		var j = {};
@@ -166,6 +146,8 @@
 			json = JSON.parse(json);
 			switch(json.user_ID){
 				case -3:
+					//hide Canlender
+					$("#wrap").hide();
 					showLogin();
 					return;
 				default:
@@ -178,7 +160,10 @@
 		$("#userBar").empty();
 		$("#list").empty();
 		$("#list").load("userLogin.html", function(response, status, xhr) {
-			
+			$("#list").find("tr").css("font-size","3em");
+			$("#list").find("input").attr("size","9");
+			$("#list").find("table").css("padding-top",$(window).height()/4);
+			$("#list").find("button").css("font-size","1em");
 		});
 	}
 	function showUser(json){
@@ -202,8 +187,10 @@
 					return;
 				default:
 					showUser(json);
+					$("#wrap").show();	
 					$.refreshCalendar();
 					showOrderByMonth(new Date().getFullYear(),new Date().getMonth()+1);
+					
 			}
 		});
 			
@@ -403,16 +390,16 @@
 		var title_order_date = $("<td >活动日期</td>");
 		var title_client_No = $("<td>团队数量</td>");
 		var title_order_creator = $("<td>订单添加人</td>");
-		var title_order_refer = $("<td>参加项目</td>");
-		var title_order_ordered = $("<td>预约or签约</td>");
+		//var title_order_refer = $("<td>参加项目</td>");
+		//var title_order_ordered = $("<td>预约or签约</td>");
 		
-		table.css("font-size","xx-small");
+		//table.css("font-size","xx-small");
 		table.css("margin","auto");
 		
 		
 		title_tr.append(title_client_name).append(title_order_date)
-		.append(title_client_No).append(title_order_creator)
-		.append(title_order_refer).append(title_order_ordered);
+		.append(title_client_No).append(title_order_creator);
+		//.append(title_order_refer).append(title_order_ordered);
 		
 		table.append(title_tr);
 		
@@ -428,8 +415,8 @@
 			var order_date = $("<td><input readOnly='readonly'></input></td>");
 			var client_No = $("<td><input  readOnly='readonly'></input></td>");
 			var order_creator = $("<td><input readOnly='readonly'></input></td>");
-			var order_refer = $("<td><select name='select' disabled='disabled'><option value='1'>项目01</option><option value='2'>项目02</option></select></td>");
-			var order_ordered = $("<td><select name='select' disabled='disabled'><option value='0'>预约</option><option value='1'>签约</option></select></td>");
+			//var order_refer = $("<td><select name='select' disabled='disabled'><option value='1'>项目01</option><option value='2'>项目02</option></select></td>");
+			//var order_ordered = $("<td><select name='select' disabled='disabled'><option value='0'>预约</option><option value='1'>签约</option></select></td>");
 			
 
 			var order_delete = $("<td><button onclick='deleteOrder("+json[i].order_ID+")'>删除</button></td>");
@@ -437,11 +424,15 @@
 			var order_detail = $("<td><button onclick='showOrder("+json[i].order_ID+")'>详细</button></td>");
 			
 			
-			client_name.children().css("width","200px");
-			order_date.children().css("width","100px");
-			client_No.children().css("width","45px");
-			order_creator.children().css("width","80px");
+			//client_name.children().css("width","200px");
+			//order_date.children().css("width","100px");
+			//client_No.children().css("width","45px");
+			//order_creator.children().css("width","80px");
 			
+			client_name.find("input").attr("size","15");
+			order_date.find("input").attr("size","10");
+			client_No.find("input").attr("size","4");
+			order_creator.find("input").attr("size","7");
 			
 			client_name.find("input").val(json[i].client_name);
 			var date = json[i].order_date;
@@ -449,11 +440,11 @@
 					+ (date.date) + " " + date.hours + ":" + date.minutes);
 			client_No.find("input").val(json[i].client_No);
 			order_creator.find("input").val(json[i].order_creator);
-			order_refer.find("select").val(json[i].order_refer);
-			order_ordered.find("select").val(json[i].order_ordered);
+			//order_refer.find("select").val(json[i].order_refer);
+			//order_ordered.find("select").val(json[i].order_ordered);
 			tr.append(client_name).append(order_date)
-				.append(client_No).append(order_creator)
-				.append(order_refer).append(order_ordered);
+				.append(client_No).append(order_creator);
+				//.append(order_refer).append(order_ordered);
 			
 			tr.append(order_delete).append(order_edit).append(order_detail);
 				
@@ -466,7 +457,7 @@
 			client_No_counter += json[i].client_No;
 		}
 		var counter = $("<p >共来团"+json.length+"个,共"+client_No_counter+"人</p>")
-		counter.css("font-size","large");
+		//counter.css("font-size","large");
 		table.prepend(counter);
 		
 		
@@ -475,12 +466,13 @@
 </head>
 <body>
 	<div id="head">
-		<p style="font-size:xx-large; text-align:center;">河北村民俗园 订单 录入系统</p>
-		<p style="float:right;"><a href="wiki">帮助</a></p>
+		<p style="font-size:3em; text-align:center;">河北村民俗园 订单 录入系统</p>
+		
 	</div>
 	<div id="main">
 		<div>
-			<div style="float:right;" id="userBar"></div>
+			<div style="font-size:xx-large; float:right;" id="userBar"></div>
+			<p style="font-size:xx-large; float:right;"><a href="wiki">帮助</a></p>
 		</div>
 		<div> 
 			<div id='wrap'>		
