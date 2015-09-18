@@ -184,7 +184,7 @@
 	function userLogin(user,pwd){
 		$user = $(user);
 		$pwd = $(pwd)
-		console.log("action/UserAction!login?username="+ $user.val() + "&userpwd="+ $pwd.val());
+		//console.log("action/UserAction!login?username="+ $user.val() + "&userpwd="+ $pwd.val());
 		$.getJSON("action/UserAction!login?username="+ $user.val() + "&userpwd="+ $pwd.val(),function(json) {
 			json = JSON.parse(json);
 			switch(json.user_ID){
@@ -239,7 +239,7 @@
 		
 		$.post("action/OrderAction!saveOrder", toJSON(), function(json) {
 			json = JSON.parse(json);
-			console.log(json);
+			//console.log(json);
 			if (json["order_ID"] != -1) {
 				//order_ID = json["order_ID"];
 				alert("保存成功");
@@ -269,7 +269,7 @@
 			monthSelect($("#order_date_year"),$("#order_date_month"),$("#order_date_date"));
 			$.getJSON("action/OrderAction!getOrder?order_ID="+ ID,function(json) {
 				json = JSON.parse(json);
-				console.log(json);
+				//console.log(json);
 				if (json["order_ID"] != -1) {
 					$("#client_name").val(json.client_name);
 					var date = json.order_date;
@@ -294,7 +294,7 @@
 			return;
 		$.getJSON("action/OrderAction!deleteOrder?order_ID="+ ID,function(json) {
 			json = JSON.parse(json);
-			console.log(json);
+			//console.log(json);
 			if (json["order_ID"] != -2) {
 				alert("删除成功");
 				order_ID = -1;
@@ -317,7 +317,7 @@
 		$("#list").load("showOrder.html",function(response, status, xhr) {
 			$.getJSON("action/OrderAction!getOrder?order_ID="+ ID,function(json) {
 				json = JSON.parse(json);
-				console.log(json);
+				//console.log(json);
 				if (json["order_ID"] != -1) {
 					$("#client_name").val(json.client_name);
 					var date = json.order_date;
@@ -345,7 +345,7 @@
 		var select_url = "action/OrderAction!getOrdersByMonth.action?";
 		if( year>3000 || year<2000 || month>12 || month<1)
 			return ;
-		console.log(select_url + "year=" + year + "&month=" + month);
+		//console.log(select_url + "year=" + year + "&month=" + month);
 		get_list_url = select_url + "year=" + year + "&month=" + month;
 		$.getJSON(select_url + "year=" + year + "&month=" + month, function(json) {
 			json = JSON.parse(json);
@@ -358,7 +358,7 @@
 		var select_url = "action/OrderAction!getOrdersByDay.action?";
 		if( year>3000 || year<2000 || month>12 || month<1 || day>5 )
 			return ;
-		console.log(select_url + "year=" + year + "&month=" + month + "&day=" + day);
+		//console.log(select_url + "year=" + year + "&month=" + month + "&day=" + day);
 		get_list_url = select_url + "year=" + year + "&month=" + month + "&day=" + day;
 		$.getJSON(select_url + "year=" + year + "&month=" + month + "&day=" + day, function(json) {
 			json = JSON.parse(json);
@@ -381,7 +381,7 @@
 		var select_url = "action/OrderAction!getOrders.action?";
 		if( year>3000 || year<2000 || month>12 || month<1 || date>31 || date<1 || end_year>3000 || end_year<2000 || end_month>12 || end_month<1 || end_date>31 || end_date<1)
 			return ;
-		console.log(select_url + "year=" + year + "&month=" + month + "&date=" + date + "&end_year=" + end_year + "&end_month=" + end_month + "&end_date=" + end_date);
+		//console.log(select_url + "year=" + year + "&month=" + month + "&date=" + date + "&end_year=" + end_year + "&end_month=" + end_month + "&end_date=" + end_date);
 		get_list_url = select_url + "year=" + year + "&month=" + month + "&date=" + date + "&end_year=" + end_year + "&end_month=" + end_month + "&end_date=" + end_date;
 		$.getJSON(select_url + "year=" + year + "&month=" + month + "&date=" + date + "&end_year=" + end_year + "&end_month=" + end_month + "&end_date=" + end_date, function(json) {
 			json = JSON.parse(json);
