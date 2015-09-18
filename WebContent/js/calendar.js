@@ -139,8 +139,8 @@ $(function(){
 				dateObj.eq(i).text(i+2-dateFirstDay);
 				//重设ID
 				dateObj.eq(i).attr("id","day"+(i+2-dateFirstDay));
-				//console.log("i:+"+i);
-				//console.log("i+1-dateFirstDay:"+(i+1-dateFirstDay));
+				////console.log("i:+"+i);
+				////console.log("i+1-dateFirstDay:"+(i+1-dateFirstDay));
 			}
 		}
 	}
@@ -170,7 +170,7 @@ $(function(){
 		/*for(iterator = 0 ; iterator < json.length;iterator++)
 		{
 			var html = "<p onclick='showOrder("+json[iterator].order_ID+")'>"+json[iterator].client_name+"</p>"
-			console.log("#day"+json[iterator].order_date.date+"输出")
+			//console.log("#day"+json[iterator].order_date.date+"输出")
 			$("#day"+json[iterator].order_date.date).append(html);
 		}*///去掉每天显示内容
 	}
