@@ -27,20 +27,11 @@ public class OrderService {
 		calendar.set(year, month-1, 1, 0, 0);//获取指定月1日时间
 		int date = (day)*7-calendar.get(Calendar.DAY_OF_WEEK)-4;
 		int date_end = date+6;
-		int big[] = {1,3,5,7,8,10,12};
-	 	int smail[] = {3,6,9,10,11};
+		
 	 	//Reset date_end
-	 	if(month==2){
-	 		int temp = this.getFebDate(year);
-	 		if(date_end > temp)
-	 			date_end = temp;
-	 	}
-	 	for(int i = 0;i<big.length;i++)
-			if(big[i] == month && date_end > 31)
-				date_end = 31;
-	 	for(int i = 0;i<smail.length;i++)
-			if(smail[i] == month && date_end > 30)
-				date_end = 30;
+ 		int temp = this.getMonthDate(year, month);
+ 		if(date_end > temp)
+ 			date_end = temp;
 		if(date>date_end)
 			return null;
 		if(date<1)
@@ -58,17 +49,7 @@ public class OrderService {
 		calendar.set(year, month-1, 1, 0, 0);//获取指定月1日时间
 		Timestamp f = new Timestamp(calendar.getTimeInMillis());
 		calendar.clear();
-		int big[] = {1,3,5,7,8,10,12};
-	 	int smail[] = {3,6,9,10,11};
-	 	if(month==2){
-	 		calendar.set(year, month-1,this.getFebDate(year), 23, 59);
- 		}
-	 	for(int i = 0;i<big.length;i++)
-			if(big[i] == month)
-				calendar.set(year, month-1, 31,23,59);
-	 	for(int i = 0;i<smail.length;i++)
-			if(smail[i] == month)
-				calendar.set(year, month-1, 30, 23, 59);
+		calendar.set(year, month-1,this.getMonthDate(year, month), 23, 59);
 		Timestamp l = new Timestamp(calendar.getTimeInMillis());
 		return new OrderDao().getOrders(f, l);
 	}
@@ -114,6 +95,19 @@ public class OrderService {
 		}
 		return date_end;
 	}
-	
+	private int getMonthDate(int year,int month) {
+		int big[] = {1,3,5,7,8,10,12};
+	 	int smail[] = {4,6,9,11};
+	 	if(month==2){
+	 		return this.getFebDate(year);
+ 		}
+	 	for(int i = 0;i<big.length;i++)
+			if(big[i] == month)
+				return 31;
+	 	for(int i = 0;i<smail.length;i++)
+			if(smail[i] == month)
+				return 30;
+	 	return -1;
+	}
 	
 }
