@@ -24,8 +24,9 @@ public class OrderService {
 	public List<Order> getOrdersByDay(int year,int month,int day){
 		Calendar calendar = Calendar.getInstance();
 		calendar.clear();
-		calendar.set(year, month-1, 1, 0, 0);//获取指定月1日时间
-		int date = (day)*7-calendar.get(Calendar.DAY_OF_WEEK)-4;
+		calendar.set(year, month-1, 7, 0, 0);//获取指定月1日时间
+		int true_day = (calendar.get(Calendar.DAY_OF_WEEK)+5)%7;//calendar获取的星期数是以周日为首的,为了获取以周一为首的,所以进行处理. 处理后.周一为零,以此类推
+		int date = (day-1)*7-true_day;
 		int date_end = date+6;
 		
 	 	//Reset date_end
@@ -36,6 +37,7 @@ public class OrderService {
 			return null;
 		if(date<1)
 			date = 1;
+		
 		calendar.set(year, month-1, date, 0, 0);
 		Timestamp f = new Timestamp(calendar.getTimeInMillis());
 		calendar.set(year, month-1, date_end, 23, 59);

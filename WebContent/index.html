@@ -403,16 +403,16 @@
 		var title_order_date = $("<td >活动日期</td>");
 		var title_client_No = $("<td>团队数量</td>");
 		var title_order_creator = $("<td>订单添加人</td>");
-		var title_order_refer = $("<td>参加项目</td>");
-		var title_order_ordered = $("<td>预约or签约</td>");
+		//var title_order_refer = $("<td>参加项目</td>");
+		//var title_order_ordered = $("<td>预约or签约</td>");
 		
 		table.css("font-size","xx-small");
 		table.css("margin","auto");
 		
 		
 		title_tr.append(title_client_name).append(title_order_date)
-		.append(title_client_No).append(title_order_creator)
-		.append(title_order_refer).append(title_order_ordered);
+		.append(title_client_No).append(title_order_creator);
+		//.append(title_order_refer).append(title_order_ordered);
 		
 		table.append(title_tr);
 		
@@ -428,8 +428,8 @@
 			var order_date = $("<td><input readOnly='readonly'></input></td>");
 			var client_No = $("<td><input  readOnly='readonly'></input></td>");
 			var order_creator = $("<td><input readOnly='readonly'></input></td>");
-			var order_refer = $("<td><select name='select' disabled='disabled'><option value='1'>项目01</option><option value='2'>项目02</option></select></td>");
-			var order_ordered = $("<td><select name='select' disabled='disabled'><option value='0'>预约</option><option value='1'>签约</option></select></td>");
+			//var order_refer = $("<td><select name='select' disabled='disabled'><option value='1'>项目01</option><option value='2'>项目02</option></select></td>");
+			//var order_ordered = $("<td><select name='select' disabled='disabled'><option value='0'>预约</option><option value='1'>签约</option></select></td>");
 			
 
 			var order_delete = $("<td><button onclick='deleteOrder("+json[i].order_ID+")'>删除</button></td>");
@@ -449,11 +449,11 @@
 					+ (date.date) + " " + date.hours + ":" + date.minutes);
 			client_No.find("input").val(json[i].client_No);
 			order_creator.find("input").val(json[i].order_creator);
-			order_refer.find("select").val(json[i].order_refer);
-			order_ordered.find("select").val(json[i].order_ordered);
+			//order_refer.find("select").val(json[i].order_refer);
+			//order_ordered.find("select").val(json[i].order_ordered);
 			tr.append(client_name).append(order_date)
-				.append(client_No).append(order_creator)
-				.append(order_refer).append(order_ordered);
+				.append(client_No).append(order_creator);
+				//.append(order_refer).append(order_ordered);
 			
 			tr.append(order_delete).append(order_edit).append(order_detail);
 				
